@@ -109,11 +109,12 @@ class TrackProvider with ChangeNotifier {
     try {
       // TODO: Replace with actual API call to fetch tracks
       // For now, this is a placeholder implementation
-      await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
+      //await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
       
       // You'll need to implement the actual API call here
-      // final tracks = await _uploadService.fetchTracks();
-      // _tracks = tracks;
+       final tracks = await _uploadService.fetchTracks();
+       print('Tracks loaded in provider: $tracks');
+       _tracks = tracks;
       
       notifyListeners();
     } catch (e) {

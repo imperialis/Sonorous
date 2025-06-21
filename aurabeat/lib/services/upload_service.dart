@@ -140,6 +140,19 @@ class UploadService {
     }
   }
 
+  ///fetch tracks method
+  Future<List<Track>> fetchTracks() async {
+  try {
+    final response = await _dioClient.dio.get(ApiConstants.tracks); // e.g., "/api/tracks"
+    print('Raw response: ${response.data}');
+    final data = response.data as List;
+    return data.map((json) => Track.fromJson(json)).toList();
+  } catch (e) {
+    print('fetchTracks error: $e');
+    throw Exception('Failed to load tracks: $e');
+  }
+  }
+
   /// Upload with progress callback
   Future<UploadResponse> uploadWithProgress({
     File? file,

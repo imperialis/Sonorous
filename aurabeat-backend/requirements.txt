@@ -1,0 +1,46 @@
+# Core Flask dependencies
+Flask
+Flask-SQLAlchemy
+Flask-CORS
+
+# Authentication & Security
+PyJWT
+bcrypt
+
+# AI/ML Libraries
+transformers
+torch
+torchvision
+torchaudio
+scikit-learn
+numpy
+
+# Audio Processing
+librosa
+soundfile
+mutagen
+tinytag
+pydub
+
+# Speech Recognition
+openai-whisper
+# HTTP Requests
+requests
+# Database
+SQLAlchemy
+
+# Development & Logging
+python-dotenv
+
+# Optional: For enhanced audio processing
+demucs
+
+# System dependencies (may need to be installed separately)
+# ffmpeg (system package)
+# For Ubuntu/Debian: sudo apt install ffmpeg
+# For macOS: brew install ffmpeg
+# For Windows: Download from https://ffmpeg.org/
+
+# Additional utilities
+pathlib2
+uuid

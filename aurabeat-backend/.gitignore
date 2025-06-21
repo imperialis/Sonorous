@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+.env/
+.env.*  # e.g., .env.development or .env.local
+
+# Flask cache and log files
+*.log
+*.pot
+*.pyc
+*.pyo
+instance/
+.cache/
+
+# SQLite database and migration history
+*.db
+*.sqlite3
+migrations/
+
+# Static/media uploads
+static/uploads/
+static/temp/
+
+# VSCode and other IDE/editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# macOS / Linux / Windows system files
+.DS_Store
+Thumbs.db

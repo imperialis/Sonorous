@@ -1,5 +1,6 @@
 class ApiConstants {
-  static const String baseUrl = 'http://localhost:5000';
+  //static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = 'https://curly-space-carnival-5xwr9769jp6345wg-5000.app.github.dev/';
   
   // Auth endpoints
   static const String register = '/api/auth/register';
@@ -7,6 +8,9 @@ class ApiConstants {
   
   // Upload endpoints
   static const String upload = '/api/upload/';
+  //static const String tracks = '/api/tracks';
+  static const String tracks = '/api/upload/';
+
   
   // AuraGen endpoints
   static const String auragenGenerate = '/api/auragen/generate';
