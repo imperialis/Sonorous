@@ -347,7 +347,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               title: 'View Lyrics',
               onTap: () {
                 Navigator.pop(context);
-                context.push('/lyrics/${track.id}');
+                //context.push('/lyrics/${track.id}');
+                context.push('/lyrics?trackId=${track.id}');
               },
             ),
             _buildOptionTile(
@@ -355,7 +356,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               title: 'Create Remix',
               onTap: () {
                 Navigator.pop(context);
-                context.push('/remix/${track.id}');
+                //context.push('/remix/${track.id}');
+                context.push('/remix?trackId=${track.id}');
               },
             ),
             _buildOptionTile(
@@ -363,7 +365,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               title: 'Extract Stems',
               onTap: () {
                 Navigator.pop(context);
-                context.push('/stems/${track.id}');
+                //context.push('/stems/${track.id}');
+                context.push('/stem?trackId=${track.id}');
               },
             ),
             _buildOptionTile(

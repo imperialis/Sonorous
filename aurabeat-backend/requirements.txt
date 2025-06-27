@@ -36,7 +36,7 @@ python-dotenv
 demucs
 
 # System dependencies (may need to be installed separately)
-# ffmpeg (system package)
+ffmpeg #(system package)
 # For Ubuntu/Debian: sudo apt install ffmpeg
 # For macOS: brew install ffmpeg
 # For Windows: Download from https://ffmpeg.org/

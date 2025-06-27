@@ -181,10 +181,12 @@ class LyricsProvider with ChangeNotifier {
     _clearError();
     try {
       final response = await _lyricsService.transcribeLyrics(trackId);
-      if (response.lyrics != null) {
-        _trackLyrics[trackId] = response.lyrics!;
+      // if (response.lyrics != null) {
+      //   _trackLyrics[trackId] = response.lyrics!;
+      _trackLyrics[trackId] = response;
+
         notifyListeners();
-      }
+      //}
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -197,10 +199,11 @@ class LyricsProvider with ChangeNotifier {
     _clearError();
     try {
       final response = await _lyricsService.editLyrics(trackId, lyrics);
-      if (response.lyrics != null) {
-        _trackLyrics[trackId] = response.lyrics!;
+      // if (response.lyrics != null) {
+      //   _trackLyrics[trackId] = response.lyrics!;
+      _trackLyrics[trackId] = response;
         notifyListeners();
-      }
+      //}
     } catch (e) {
       _setError(e.toString());
     } finally {

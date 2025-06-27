@@ -1653,6 +1653,8 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     if (_selectedTrack?.id != null) {
       final provider = context.read<StemProvider>();
       await provider.getStems(_selectedTrack!.id!);
+      debugPrint('Loading stems for track ID: ${_selectedTrack!.id}, title: ${_selectedTrack!.title}');
+      
     }
   }
 
@@ -1672,6 +1674,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     try {
       final provider = context.read<StemProvider>();
       await provider.extractStems(_selectedTrack!.id!);
+      
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -2169,6 +2172,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
         final stemData = provider.stems[stemName]!;
         final isSelected = _selectedStem == stemName;
         final isPlaying = _currentlyPlayingStem == stemName;
+        print('🧪 Stem Debug → index: $index | stemName: $stemName | isSelected: $isSelected | isPlaying: $isPlaying | duration: ${stemData.duration} | filePath: ${stemData.filepath} | name: ${stemData.name}');
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -2225,7 +2229,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_formatDuration(stemData.duration ?? 0)} • ${_formatFileSize(stemData.fileSize ?? 0)}',
+                                '${_formatDuration(stemData.duration ?? 0)}', //• ${_formatFileSize(stemData.fileSize ?? 0)}',
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 12,
@@ -2239,7 +2243,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                           children: [
                             IconButton(
                               onPressed: () {
-                                _playStem(stemName, stemData.filePath);
+                                _playStem(stemName, stemData.filepath);
                               },
                               icon: Icon(
                                 isPlaying ? Icons.pause : Icons.play_arrow,
@@ -2248,7 +2252,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                             ),
                             IconButton(
                               onPressed: () {
-                                _downloadStem(stemName, stemData.filePath);
+                                _downloadStem(stemName, stemData.filepath);
                               },
                               icon: Icon(
                                 Icons.download,
@@ -2266,7 +2270,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                       Divider(color: AppColors.textSecondary.withOpacity(0.2)),
                       const SizedBox(height: 16),
                       StemVisualizerWidget(
-                        stems: stemData,
+                        stems: [stemData],
                         //color: _getStemColor(stemName),
                       ),
                       const SizedBox(height: 16),
@@ -2279,7 +2283,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                           album: _selectedTrack?.album,
                           duration: null,
                           userId: _selectedTrack?.userId,
-                          filepath: stemData.filePath,
+                          filepath: stemData.filepath,
                           createdAt: DateTime.now(),
                           updatedAt: DateTime.now(),
                         ),
@@ -2348,6 +2352,8 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
       itemBuilder: (context, index) {
         final stemName = provider.sections.keys.elementAt(index);
         final sections = provider.sections[stemName]!;
+        debugPrint('Returned from listview builder- Stem: $stemName → Sections: ${sections.map((s) => s?.sectionName ?? "Unnamed").toList()}');
+
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
@@ -2413,6 +2419,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                 final sectionIndex = entry.key;
                 final section = entry.value;
                 final isLast = sectionIndex == sections.length - 1;
+                debugPrint('From sections list-  Stem: $stemName | Section Index: $sectionIndex | Name: ${section.sectionName} | isLast: $isLast');
 
                 return Container(
                   margin: EdgeInsets.fromLTRB(16, 0, 16, isLast ? 16 : 8),
@@ -2450,7 +2457,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              section.name ?? 'Section ${sectionIndex + 1}',
+                              section.sectionName ?? 'Section ${sectionIndex + 1}',                              
                               style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w500,
@@ -2551,7 +2558,7 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     return '${minutes}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
-  void _playStem(String stemName, String filePath) {
+  void _playStem(String stemName, String filepath) {
     setState(() {
       _currentlyPlayingStem = _currentlyPlayingStem == stemName ? null : stemName;
     });
@@ -2569,15 +2576,6 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     );
   }
 
-  // void _downloadStem(String stemName, String filePath) {
-  //   // TODO: Implement stem download functionality
-  //   // This would typically involve file download service
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text('Downloading $stemName stem...'),
-  //       duration: const Duration(seconds: 2),
-  //       action: SnackBarAction(
-  //         label: 'Cancel',
 
      void _downloadStem(String stemName, String filePath) {
     // TODO: Implement stem download functionality

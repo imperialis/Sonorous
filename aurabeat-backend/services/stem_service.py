@@ -129,7 +129,7 @@ class StemService:
             # Compute structural features
             chroma = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr)
             recurrence = librosa.segment.recurrence_matrix(chroma, mode='affinity')
-            sequence = librosa.segment.path_enhance(recurrence)
+            sequence = librosa.segment.path_enhance(recurrence, n=3)
             boundaries = librosa.segment.agglomerative(sequence, k=5)  # ~5 sections
 
             boundary_samples = librosa.frames_to_samples(boundaries)

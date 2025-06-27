@@ -45,6 +45,7 @@ import '../core/utils/dio_client.dart';
 import '../core/constants/api_constants.dart';
 import '../models/track_model.dart';
 
+
 class UploadService {
   final DioClient _dioClient = DioClient.instance;
 
@@ -141,17 +142,27 @@ class UploadService {
   }
 
   ///fetch tracks method
+  // Future<List<Track>> fetchTracks() async {
+  // try {
+  //   final response = await _dioClient.dio.get(ApiConstants.tracks); // e.g., "/api/tracks"
+  //   print('Raw response: ${response.data}');
+  //   final data = response.data as List;
+  //   return data.map((json) => Track.fromJson(json)).toList();
+  // } catch (e) {
+  //   print('fetchTracks error: $e');
+  //   throw Exception('Failed to load tracks: $e');
+  // }
+  // }
   Future<List<Track>> fetchTracks() async {
   try {
-    final response = await _dioClient.dio.get(ApiConstants.tracks); // e.g., "/api/tracks"
-    print('Raw response: ${response.data}');
-    final data = response.data as List;
-    return data.map((json) => Track.fromJson(json)).toList();
+    final response = await _dioClient.dio.get(ApiConstants.tracks);
+    final List<dynamic> rawList = response.data['tracks'];
+    return rawList.map((json) => mapBackendJsonToTrack(json)).toList();
   } catch (e) {
-    print('fetchTracks error: $e');
     throw Exception('Failed to load tracks: $e');
   }
-  }
+}
+
 
   /// Upload with progress callback
   Future<UploadResponse> uploadWithProgress({
@@ -264,4 +275,36 @@ class ValidationResult {
     required this.isValid,
     this.error,
   });
+}
+
+
+
+Track mapBackendJsonToTrack(Map<String, dynamic> backendJson) {
+  // Parse DateTime fields safely
+  DateTime parseDate(String? dateStr) =>
+      dateStr != null ? DateTime.parse(dateStr) : DateTime.now();
+
+  // Filename fallback: if backend sends title, use it; else extract from file_path
+  String extractFileName(String filePath) {
+    return filePath.split('/').last;
+  }
+
+  final filepath = backendJson['file_path'] as String;
+  final title = backendJson['title'] as String?;
+  final filename = title ?? extractFileName(filepath);
+
+  return Track(
+    id: backendJson['id'],
+    filename: filename,
+    title: title,
+    artist: backendJson['artist'],
+    album: backendJson['album'],
+    duration: (backendJson['duration'] != null)
+        ? (backendJson['duration'] as num).toDouble()
+        : null,
+    userId: backendJson['user_id'],
+    filepath: filepath,
+    createdAt: parseDate(backendJson['uploaded_at']),
+    updatedAt: parseDate(backendJson['updated_at']),
+  );
 }

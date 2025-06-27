@@ -251,6 +251,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
@@ -324,7 +325,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _navigateToLogin() {
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    //Navigator.pushReplacementNamed(context, AppRoutes.login);
+    context.go(AppRoutes.login);
   }
 
   @override

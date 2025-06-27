@@ -91,8 +91,10 @@ class StemProvider with ChangeNotifier {
   Map<int, List<StemSection>> _trackSections = {};
   
   // Current active stems and sections (for the current track)
-  Map<String, dynamic> _stems = {};
-  Map<String, List<dynamic>> _sections = {};
+  Map<String, Stem> _stems = {};
+  //Map<String, dynamic> _stems = {};
+  Map<String, List<StemSection>> _sections = {};
+  //Map<String, List<dynamic>> _sections = {};
   
   bool _isLoading = false;
   bool _isExtracting = false;
@@ -104,8 +106,9 @@ class StemProvider with ChangeNotifier {
   Map<int, List<StemSection>> get trackSections => _trackSections;
   
   // Getters for current track stems/sections (what StemScreen expects)
-  Map<String, dynamic> get stems => _stems;
-  Map<String, List<dynamic>> get sections => _sections;
+  Map<String, Stem> get stems => _stems;
+  Map<String, List<StemSection>> get sections => _sections;
+  //Map<String, List<dynamic>> get sections => _sections;
   
   bool get isLoading => _isLoading;
   bool get isExtracting => _isExtracting;
@@ -132,12 +135,16 @@ class StemProvider with ChangeNotifier {
       
       if (existingStems != null) {
         _stems = _convertStemsToMap(existingStems);
+        debugPrint('existing_stems: ${_stems}');
+
       } else {
         _stems = {};
       }
       
       if (existingSections != null) {
         _sections = _convertSectionsToMap(existingSections);
+        debugPrint('existing sections: ${_sections}');
+
       } else {
         _sections = {};
       }
@@ -160,6 +167,7 @@ class StemProvider with ChangeNotifier {
       if (response.stems != null) {
         _trackStems[trackId] = response.stems!;
         _stems = _convertStemsToMap(response.stems!);
+        print(' ConvertStemsToMap response: ${_stems}');
         notifyListeners();
       }
     } catch (e) {
@@ -180,11 +188,13 @@ class StemProvider with ChangeNotifier {
       if (response.stems != null) {
         _trackStems[trackId] = response.stems!;
         _stems = _convertStemsToMap(response.stems!);
+         print(' ConvertStemsToMap response: ${_stems}');
       }
       
       if (response.sections != null) {
         _trackSections[trackId] = response.sections!;
         _sections = _convertSectionsToMap(response.sections!);
+         print(' ConvertSectionsToMap response: ${_sections}');
       }
       
       notifyListeners();
@@ -195,30 +205,60 @@ class StemProvider with ChangeNotifier {
     }
   }
 
-  // Helper methods to convert List<Stem> to Map<String, dynamic>
-  Map<String, dynamic> _convertStemsToMap(List<Stem> stems) {
-    Map<String, dynamic> stemMap = {};
-    for (var stem in stems) {
-      stemMap[stem.name ?? 'unknown'] = stem;
-    }
-    return stemMap;
-  }
+  // // Helper methods to convert List<Stem> to Map<String, dynamic>
+  // Map<String, dynamic> _convertStemsToMap(List<Stem> stems) {
+  //   Map<String, dynamic> stemMap = {};
+  //   for (var stem in stems) {
+  //     stemMap[stem.name ?? 'unknown'] = stem;
+  //   }
+  //   return stemMap;
+  // }
 
-  // Helper method to convert List<StemSection> to Map<String, List<dynamic>>
-  Map<String, List<dynamic>> _convertSectionsToMap(List<StemSection> sections) {
-    Map<String, List<dynamic>> sectionMap = {};
+  // // Helper method to convert List<StemSection> to Map<String, List<dynamic>>
+  // Map<String, List<dynamic>> _convertSectionsToMap(List<StemSection> sections) {
+  //   Map<String, List<dynamic>> sectionMap = {};
     
-    // Group sections by stem name
-    for (var section in sections) {
-      final stemName = section.stemName ?? 'unknown';
-      if (!sectionMap.containsKey(stemName)) {
-        sectionMap[stemName] = [];
-      }
-      sectionMap[stemName]!.add(section);
-    }
+  //   // Group sections by stem name
+  //   for (var section in sections) {
+  //     final stemName = section.stemName ?? 'unknown';
+  //     if (!sectionMap.containsKey(stemName)) {
+  //       sectionMap[stemName] = [];
+  //     }
+  //     sectionMap[stemName]!.add(section);
+  //   }
     
-    return sectionMap;
+  //   return sectionMap;
+  // }
+
+  // Utility to remove file extensions and lowercase the name
+String _cleanStemName(String? name) {
+  if (name == null) return 'unknown';
+  return name.replaceAll('.wav', '').toLowerCase();
+}
+
+// Convert List<Stem> to Map<String, dynamic> with cleaned keys
+Map<String, Stem> _convertStemsToMap(List<Stem> stems) {
+  Map<String, Stem> stemMap = {};
+  for (var stem in stems) {
+    final cleanName = _cleanStemName(stem.name);
+    stemMap[cleanName] = stem;
   }
+  return stemMap;
+}
+
+// Convert List<StemSection> to Map<String, List<dynamic>> with cleaned keys
+// Map<String, List<dynamic>> _convertSectionsToMap(List<StemSection> sections) {
+// Map<String, List<dynamic>> sectionMap = {};
+Map<String, List<StemSection>> _convertSectionsToMap(List<StemSection> sections) {
+Map<String, List<StemSection>> sectionMap = {};
+  for (var section in sections) {
+    final cleanStemName = _cleanStemName(section.stemName);
+    sectionMap.putIfAbsent(cleanStemName, () => []);
+    sectionMap[cleanStemName]!.add(section);
+  }
+  return sectionMap;
+}
+
 
   void _setLoading(bool loading) {
     _isLoading = loading;

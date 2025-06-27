@@ -23,7 +23,8 @@ def create_app():
     app = Flask(__name__)
     #CORS(app)
     CORS(app,
-         resources={r"/api/*": {"origins": "https://curly-space-carnival-5xwr9769jp6345wg-8080.app.github.dev"}},
+         resources={r"/api/*": {"origins": "https://obscure-guacamole-69rq46qv47rwc55w5-8080.app.github.dev"},
+         r"/exports/*": {"origins": "https://obscure-guacamole-69rq46qv47rwc55w5-8080.app.github.dev"},},
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
@@ -31,6 +32,10 @@ def create_app():
 
 
     app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+    
+
+
+
 
     init_db(app)
 
@@ -51,6 +56,11 @@ def create_app():
     @app.route('/uploads/<path:filename>')
     def uploaded_file(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+    @app.route('/exports/lyrics/<path:filename>')
+    def serve_exported_lyrics(filename):
+        return send_from_directory(os.path.join('static', 'exports', 'lyrics'), filename)
+    
 
     return app
 

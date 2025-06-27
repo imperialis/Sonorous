@@ -110,15 +110,30 @@ class LyricsService:
             db.session.rollback()
             return False
 
+    # def export_lyrics(self, lyrics_text, output_path):
+    #     """
+    #     Optional: Save lyrics to a file instead of the DB.
+    #     """
+    #     try:
+    #         with open(output_path, "w", encoding="utf-8") as f:
+    #             f.write(lyrics_text)
+    #         logger.info(f"Lyrics saved to: {output_path}")
+    #         return True
+    #     except Exception as e:
+    #         logger.error(f"Failed to save lyrics: {e}")
+    #         return False
     def export_lyrics(self, lyrics_text, output_path):
         """
-        Optional: Save lyrics to a file instead of the DB.
+        Saves lyrics to a file and returns the path if successful.
         """
         try:
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(lyrics_text)
             logger.info(f"Lyrics saved to: {output_path}")
-            return True
+            return output_path  
         except Exception as e:
             logger.error(f"Failed to save lyrics: {e}")
-            return False
+            return None  
+
+
+    

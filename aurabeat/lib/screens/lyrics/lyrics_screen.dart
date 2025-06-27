@@ -558,6 +558,9 @@ class _LyricsScreenState extends State<LyricsScreen> {
     setState(() {
       _selectedTrack = track;
     });
+    final lyricsProvider = context.read<LyricsProvider>();
+    //new addition
+    lyricsProvider.currentTrackId = track.id;
     context.read<TrackProvider>().setCurrentTrack(track);
     _loadLyrics();
   }
@@ -568,7 +571,9 @@ class _LyricsScreenState extends State<LyricsScreen> {
       debugPrint('Track ID is null. Cannot load lyrics.');
       return;
     }
-    await provider.getLyricsForTrack(_selectedTrack!.id!);
+    //await provider.getLyricsForTrack(_selectedTrack!.id!);
+    await provider.loadLyrics(_selectedTrack!.id!); 
+
   }
 
   Future<void> _transcribeLyrics() async {
@@ -580,6 +585,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
         return;
       }
       await provider.transcribeLyrics(_selectedTrack!.id!);
+      await provider.loadLyrics(_selectedTrack!.id!);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -610,6 +616,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
         _transcribeLyrics();
         break;
       case 'edit':
+        //context.push('/lyrics/${_selectedTrack!.id}/edit', extra: _selectedTrack);
         context.push('/lyrics/${_selectedTrack!.id}/edit', extra: _selectedTrack);
         break;
       case 'export':

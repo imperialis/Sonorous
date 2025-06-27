@@ -72,6 +72,7 @@ class Track(db.Model):
             'artist': self.artist,
             'album': self.album,
             'genre': self.genre,
+            'lyrics': self.lyrics,
             'year': self.year,
             'file_path': url_for('uploaded_file', filename=os.path.basename(self.file_path), _external=True),
             'duration': self.duration,
