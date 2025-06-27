@@ -2,3 +2,5 @@ flutter/
 aurabeat/flutter/
 flutter/
 aurabeat/flutter/
+*.tar.xz
+*.tar.xz.*
