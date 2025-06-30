@@ -1,6 +1,6 @@
 class ApiConstants {
   //static const String baseUrl = 'http://localhost:5000';
-  static const String baseUrl = 'https://sonorous.fly.dev/';
+  static const String baseUrl = 'https://sonorous.fly.dev';
   
   // Auth endpoints
   static const String register = '/api/auth/register';
