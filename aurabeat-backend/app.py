@@ -23,8 +23,8 @@ def create_app():
     app = Flask(__name__)
     #CORS(app)
     CORS(app,
-         resources={r"/api/*": {"origins": "https://obscure-guacamole-69rq46qv47rwc55w5-8080.app.github.dev"},
-         r"/exports/*": {"origins": "https://obscure-guacamole-69rq46qv47rwc55w5-8080.app.github.dev"},},
+         resources={r"/api/*": {"origins": "https://sonorous-9ulc.vercel.app"},
+         r"/exports/*": {"origins": "https://sonorous-9ulc.vercel.app"},},
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
