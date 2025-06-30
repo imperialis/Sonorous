@@ -1603,6 +1603,7 @@ import '../../providers/track_provider.dart';
 import '../../models/track_model.dart';
 import '../../widgets/audio_player_widget.dart';
 import '../../widgets/stem_visualizer.dart';
+import '../../providers/player_provider.dart';
 
 class StemScreen extends StatefulWidget {
   final String? trackId;
@@ -2558,23 +2559,35 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     return '${minutes}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
-  void _playStem(String stemName, String filepath) {
-    setState(() {
-      _currentlyPlayingStem = _currentlyPlayingStem == stemName ? null : stemName;
-    });
+  // void _playStem(String stemName, String filepath) {
+  //   setState(() {
+  //     _currentlyPlayingStem = _currentlyPlayingStem == stemName ? null : stemName;
+  //   });
     
-    // TODO: Implement actual stem playback logic
-    // This would typically involve an audio service or player
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_currentlyPlayingStem == stemName 
-            ? 'Playing $stemName stem' 
-            : 'Stopped $stemName stem'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.primaryColor,
-      ),
-    );
+  //   // TODO: Implement actual stem playback logic
+  //   // This would typically involve an audio service or player
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(_currentlyPlayingStem == stemName 
+  //           ? 'Playing $stemName stem' 
+  //           : 'Stopped $stemName stem'),
+  //       duration: const Duration(seconds: 2),
+  //       backgroundColor: AppColors.primaryColor,
+  //     ),
+  //   );
+  // }
+  void _playStem(String stemName, String filePath) {
+  final playerProvider = context.read<PlayerProvider>();
+
+  if (_currentlyPlayingStem == stemName) {
+    playerProvider.pause();
+    setState(() => _currentlyPlayingStem = null);
+  } else {
+    playerProvider.playSource(filePath);
+    setState(() => _currentlyPlayingStem = stemName);
   }
+}
+
 
 
      void _downloadStem(String stemName, String filePath) {
@@ -2595,17 +2608,27 @@ class _StemScreenState extends State<StemScreen> with TickerProviderStateMixin {
     );
   }
 
+  // void _playSection(dynamic section) {
+  //   // TODO: Implement section playback with start/end time
+  //   // This would typically involve seeking to specific timestamps
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Playing section: ${section.name ?? "Unnamed"}'),
+  //       duration: const Duration(seconds: 2),
+  //       backgroundColor: AppColors.primaryColor,
+  //     ),
+  //   );
+  // }
   void _playSection(dynamic section) {
-    // TODO: Implement section playback with start/end time
-    // This would typically involve seeking to specific timestamps
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Playing section: ${section.name ?? "Unnamed"}'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.primaryColor,
-      ),
-    );
-  }
+  final playerProvider = context.read<PlayerProvider>();
+  //final sourcePath = section.filepath ?? provider.stems[_selectedStem]?.filepath;
+  final sourcePath = section.filepath; //?? _selectedStemPath; // make sure this is accessible
+  final start = Duration(seconds: section.startTime.floor());
+  final end = Duration(seconds: section.endTime.floor());
+
+  playerProvider.playSection(sourcePath, start, end);
+}
+
 }
 
 

@@ -279,50 +279,113 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-
+  
   Future<void> _handleRegister() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
+  if (!_formKey.currentState!.validate()){ 
+    debugPrint('current state notvalidated');
+    return;
+    //print('current state validated');
     }
+    
+  if (_passwordController.text != _confirmPasswordController.text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Passwords do not match'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  try {
+    final success = await authProvider.register(
+      _usernameController.text.trim(),
+      _passwordController.text,
+    );
+
+    //if (success && mounted) {
+    if (success) {  
+      debugPrint('_handleregister successfully called');
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(
         const SnackBar(
-          content: Text('Passwords do not match'),
+          content: Text('Registration successful! Please login.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      // 🧹 Clear fields after success
+        _usernameController.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
+
+      await Future.delayed(const Duration(seconds: 2)); // Let snackbar show
+
+      if (mounted) {
+        debugPrint('app is mounted and ready to move to login page');
+        context.go(AppRoutes.login); // or '/login'
+      }
+    }
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration failed: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
-      return;
-    }
-
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
-    try {
-      final success = await authProvider.register(
-        _usernameController.text.trim(),
-        _passwordController.text,
-      );
-
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful! Please login.'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Registration failed: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
     }
   }
+}
+
+
+  // Future<void> _handleRegister() async {
+  //   if (!_formKey.currentState!.validate()) {
+  //     return;
+  //   }
+
+    // if (_passwordController.text != _confirmPasswordController.text) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Passwords do not match'),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    //   return;
+    // }
+
+    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
+    // try {
+    //   final success = await authProvider.register(
+    //     _usernameController.text.trim(),
+    //     _passwordController.text,
+    //   );
+
+    //   if (success && mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+          // const SnackBar(
+          //   content: Text('Registration successful! Please login.'),
+          //   backgroundColor: Colors.green,
+          //   duration: Duration(seconds: 2),
+    //       ),
+    //     );
+    //     //Navigator.pushReplacementNamed(context, AppRoutes.login);
+    //     context.go('/login');
+    //   }
+    // } catch (e) {
+    //   if (mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Registration failed: ${e.toString()}'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
 
   void _navigateToLogin() {
     //Navigator.pushReplacementNamed(context, AppRoutes.login);
@@ -432,6 +495,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             : CustomButton(
                                 text: 'Register',
                                 onPressed: _handleRegister,
+                                
                               ),
                         const SizedBox(height: 16),
 

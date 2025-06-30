@@ -7,7 +7,10 @@ import '../../core/widgets/loading_widget.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/track_provider.dart';
 import '../../widgets/track_card.dart';
+import '../../models/track_model.dart';
 import '../../widgets/audio_player_widget.dart';
+import '../../providers/player_provider.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -134,7 +137,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      bottomSheet: const AudioPlayerWidget(),
+      //bottomSheet: const AudioPlayerWidget(),
+      bottomSheet: Consumer<PlayerProvider>(
+      builder: (context, playerProvider, child) {
+        return AudioPlayerWidget(
+        currentTrack: playerProvider.currentTrack,
+        playlist: playerProvider.playlist,
+        onTrackChanged: (newTrack) {
+        playerProvider.setTrack(newTrack, playerProvider.playlist ?? []);
+      },
+    );
+  },
+),
+
     );
   }
 
@@ -302,15 +317,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  void _playTrack(track) {
-    // Implementation will be handled by AudioPlayerWidget
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Playing: ${track.title ?? 'Unknown Track'}'),
-        backgroundColor: AppColors.primaryColor,
-      ),
-    );
-  }
+  // void _playTrack(track) {
+  //   // Implementation will be handled by AudioPlayerWidget
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Playing: ${track.title ?? 'Unknown Track'}'),
+  //       backgroundColor: AppColors.primaryColor,
+  //     ),
+  //   );
+  // }
+  void _playTrack(Track track) {
+  final playlist = context.read<TrackProvider>().tracks;
+  context.read<PlayerProvider>().setTrack(track, playlist);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Playing: ${track.title ?? 'Unknown Track'}'),
+      backgroundColor: AppColors.primaryColor,
+    ),
+  );
+}
+
+
 
   void _showTrackOptions(track) {
     showModalBottomSheet(
@@ -457,3 +485,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 }
+// class PlayerProvider extends ChangeNotifier {
+//   Track? _currentTrack;
+//   List<Track>? _playlist;
+
+//   Track? get currentTrack => _currentTrack;
+//   List<Track>? get playlist => _playlist;
+
+//   void setTrack(Track track, List<Track> playlist) {
+//     _currentTrack = track;
+//     _playlist = playlist;
+//     notifyListeners();
+//   }
+// }

@@ -1,6 +1,6 @@
 class ApiConstants {
   //static const String baseUrl = 'http://localhost:5000';
-  static const String baseUrl = 'https://obscure-guacamole-69rq46qv47rwc55w5-5000.app.github.dev/';
+  static const String baseUrl = 'https://jubilant-couscous-gw97v66p6jvcv4p6-5000.app.github.dev/';
   
   // Auth endpoints
   static const String register = '/api/auth/register';

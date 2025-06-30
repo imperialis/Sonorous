@@ -66,14 +66,14 @@ class AuthProvider extends ChangeNotifier {
       final request = RegisterRequest(username: username, password: password);
       final response = await _authService.register(request);
       
-      await StorageHelper.saveToken(response.token);
-      if (response.user != null) {
-        await StorageHelper.saveUserId(response.user!.id);
-        await StorageHelper.saveUsername(response.user!.username);
-        _currentUser = response.user;
-      }
+      // await StorageHelper.saveToken(response.token);
+      // if (response.user != null) {
+      //   await StorageHelper.saveUserId(response.user!.id);
+      //   await StorageHelper.saveUsername(response.user!.username);
+      //   _currentUser = response.user;
+      // }
       
-      _isAuthenticated = true;
+      //_isAuthenticated = true;
       _setLoading(false);
       return true;
     } catch (e) {

@@ -9,6 +9,7 @@ import 'providers/remix_provider.dart';
 import 'providers/stem_provider.dart';
 import 'providers/sync_provider.dart';
 import 'providers/tags_provider.dart';
+import 'providers/player_provider.dart';
 
 void main() {
   runApp(
@@ -22,6 +23,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => StemProvider()),
         ChangeNotifierProvider(create: (_) => SyncProvider()),
         ChangeNotifierProvider(create: (_) => TagsProvider()),
+        ChangeNotifierProvider(create: (_) => PlayerProvider()),
       ],
       child: const MusicApp(),
     ),
